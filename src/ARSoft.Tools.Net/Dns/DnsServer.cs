@@ -717,11 +717,15 @@ namespace ARSoft.Tools.Net.Dns
 
 		private void HandleUdpException(Exception e)
 		{
-			lock (_udpListener)
-			{
-				_availableUdpListener++;
-			}
-			StartUdpListen();
+            // Stoping the server will cause ObjectDisposedException
+            if (!(e is ObjectDisposedException))
+            {
+                lock (_udpListener)
+                {
+                    _availableUdpListener++;
+                }
+                StartUdpListen();
+            }
 
 			OnExceptionThrown(e);
 		}
@@ -746,11 +750,15 @@ namespace ARSoft.Tools.Net.Dns
 			}
 			catch {}
 
-			lock (_tcpListener)
-			{
-				_availableTcpListener++;
-			}
-			StartTcpAcceptConnection();
+            // Stoping the server will cause ObjectDisposedException
+            if (!(e is ObjectDisposedException))
+            {
+                lock (_tcpListener)
+                {
+                    _availableTcpListener++;
+                }
+                StartTcpAcceptConnection();
+            }
 
 			if (e != null)
 				OnExceptionThrown(e);
